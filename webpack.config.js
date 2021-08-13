@@ -2,6 +2,31 @@ const path = require('path')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+
+const TerserPlugin = require("terser-webpack-plugin")
+
+const isDev = process.env.NODE_ENV === 'development'
+const isProd = !isDev
+console.log("isDEV:", isDev)
+
+const optimization = () => {
+    const config = {
+        splitChunks: {
+            chunks: "all"
+        },
+    }
+    if (isProd) {
+        config.minimize = true;
+        config.minimizer = [
+            new TerserPlugin(),
+            new CssMinimizerPlugin(),
+        ]
+    }
+    return config;
+}
+
 
 module.exports = {
     context: path.resolve(__dirname, "src"),
@@ -20,17 +45,17 @@ module.exports = {
             '@': path.resolve(__dirname, 'src')
         }
     },
-    optimization: {
-      splitChunks: {
-          chunks: "all"
-      }
-    },
+    optimization: optimization(),
     devServer: {
         port: 4200,
+        hot: isDev
     },
     plugins: [
         new HTMLWebpackPlugin({
-            template: "./index.html"
+            template: "./index.html",
+            minify: {
+                collapseWhitespace: isProd
+            }
         }),
         new CleanWebpackPlugin(),
         new CopyWebpackPlugin({
@@ -40,14 +65,14 @@ module.exports = {
                     to: path.resolve(__dirname, 'dist')
                 }
             ]
-        })
+        }),
+        new MiniCssExtractPlugin({
+            filename: '[name].[contenthash].css'
+        }),
     ],
     module: {
         rules: [
-            {
-                test: /\.css$/i,
-                use: ['style-loader', 'css-loader']
-            },
+
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: 'asset/resource',
@@ -63,6 +88,10 @@ module.exports = {
             {
                 test: /\.csv$/,
                 use: ['csv-loader']
+            },
+            {
+                test: /\.css$/i,
+                use: [MiniCssExtractPlugin.loader, "css-loader"]
             }
         ]
     }
