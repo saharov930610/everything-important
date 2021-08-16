@@ -4,6 +4,7 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const TerserPlugin = require("terser-webpack-plugin")
 
@@ -51,6 +52,7 @@ module.exports = {
         port: 4200,
         hot: isDev
     },
+    devtool: isDev ? 'source-map' : "",
     plugins: [
         new HTMLWebpackPlugin({
             template: "./index.html",
@@ -70,6 +72,7 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: filename('css')
         }),
+        new ESLintPlugin({})
     ],
     module: {
         rules: [
