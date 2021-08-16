@@ -19,8 +19,12 @@
   "bugs": {
     "url": "https://github.com/saharov930610/everything-important/issues"
   },
+  "browserslist": "> 0.25%, not dead",
   "homepage": "https://github.com/saharov930610/everything-important#readme",
   "devDependencies": {
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "*",
     "copy-webpack-plugin": "^9.0.1",
     "cross-env": "^7.0.3",
@@ -43,6 +47,7 @@
     "xml-loader": "^1.2.1"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
     "jquery": "^3.6.0",
     "normalize.css": "^8.0.1"
   }
